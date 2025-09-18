@@ -1,0 +1,14 @@
+{% extends "utils/base.html" %}
+{% block title %} {% endblock %}
+
+{% block content %}
+{% include 'utils/header.html' %}
+
+<div class="container">
+    {{ roster|safe }}
+</div>
+
+
+
+
+{% endblock %}

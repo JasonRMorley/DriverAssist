@@ -1,0 +1,11 @@
+
+<h1 class="text-body-emphasis">Driver Details</h1>
+{% include 'dashboard/user_details.html' %}
+
+<div class="btn-group" role="group" aria-label="Basic example">
+    <a type="button" class="btn btn-primary" href="{{url_for('dashboard')}}">dashboard</a>
+    <a type="button" class="btn btn-primary" href="{{url_for('check_duty')}}">Check Duty</a>
+    <a type="button" class="btn btn-primary" href="{{url_for('check_week')}}">Check Week</a>
+    <a type="button" class="btn btn-primary" href="{{url_for('edit_line_number')}}">Edit Line Number</a>
+</div>
+<h5 class="py-3">Date: {{date}}</h5>
