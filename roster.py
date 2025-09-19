@@ -2,7 +2,7 @@ import pandas as pd
 from datetime import date
 
 roster = pd.read_csv("Stagecoach_roster_38.csv")
-duties = pd.read_csv("flat_duties_sorted.csv")
+duties = pd.read_csv("duties_mon-wed.csv")
 
 def get_column(columns: [str]):
     return roster[columns]
