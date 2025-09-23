@@ -13,7 +13,16 @@ class CheckDutyForm(FlaskForm):
 
     submit = SubmitField()
 
+
 class EditLineNumber(FlaskForm):
     line_number = StringField("Enter new line number")
+
+    submit = SubmitField()
+
+
+class SetupDriverForm(FlaskForm):
+    driver_name = StringField("Enter name")
+    driver_number = StringField("Enter driver number")
+    line_number = StringField("Enter current line number")
 
     submit = SubmitField()

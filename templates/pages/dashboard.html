@@ -1,0 +1,33 @@
+{% extends "utils/base.html" %}
+{% block title %} {% endblock %}
+
+{% block content %}
+{% include 'utils/header.html' %}
+
+<div class="container">
+    <h1 class="text-body-emphasis">Driver Details</h1>
+    <table class="table">
+      <thead>
+        <tr>
+            <th scope="col">Driver</th>
+            <th scope="col">Driver Number</th>
+            <th scope="col">Line Number</th>
+            <th scope="col">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+            <td>{{ driver["driver_name"] }}</td>
+            <td>{{ driver["driver_number"] }}</td>
+            <td>{{ driver["line_number"] }}</td>
+            <td>{{ date }}</td>
+        </tr>
+      </tbody>
+    </table>
+    {{ roster|safe }}
+</div>
+
+
+
+
+{% endblock %}

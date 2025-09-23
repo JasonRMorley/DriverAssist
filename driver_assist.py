@@ -4,56 +4,68 @@ from flask_bootstrap import Bootstrap5
 from roster import *
 from datetime import date, timedelta
 from forms import *
+from dev_tools import get_driver_service
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'roundabout'
 csrf = CSRFProtect(app)
 bootstrap = Bootstrap5(app)
 
-line_number = "3801"
-current_week = get_weeks(line_number, 5).to_html(classes="table table-striped, text-end", border=1, index=False)
-date_today = date.today()
+
 @app.route("/")
 def dashboard():
-    return render_template("dashboard/dashboard.html", roster=current_week, date=date_today)
+
+    driver_service = get_driver_service()
+    date_today = driver_service.date_today.strftime("%d/%m/%Y")
+
+    driver_data = driver_service.driver_repository.driver_data
+    show_roster = driver_service.retrieve_roster_weeks(weeks=5).to_html(
+        classes="table table-striped, text-end", border=1, index=False)
+
+    return render_template("/pages/dashboard.html", roster=show_roster, date=date_today, driver=driver_data)
+
+@app.route("/setup/driver")
 
 @app.route("/check/week", methods=["POST", "GET"])
 def check_week():
+    driver_service = get_driver_service()
+
     form = CheckWeekForm()
     check_roster = None
     if form.validate_on_submit():
         check_date = form.data["date"]
         flash(f"{check_date}", "success")
-        if check_date.weekday() == 6:
-            recent_sunday = check_date
-        else:
-            days_since_sunday = check_date.weekday() + 1
-            recent_sunday = check_date - timedelta(days=days_since_sunday)
-        check_line = get_line_from_date(today_date=date_today, target_date=recent_sunday, current_line=line_number)
-        check_roster = get_line(check_line).to_html(classes="table table-striped, text-end", border=1, index=False)
+        check_roster = driver_service.retrieve_line_from_date(check_date).to_html(
+            classes="table table-striped, text-end", border=1, index=False)
 
-
-    return render_template("check_week/check_week.html", form=form, check_roster=check_roster)
+    return render_template("pages/check_week.html", form=form, check_roster=check_roster)
 
 @app.route("/check/duty", methods=["POST", "GET"])
 def check_duty():
+    driver_service = get_driver_service()
+
     form = CheckDutyForm()
     duty = None
     if form.validate_on_submit():
         duty_number = form.data["duty"]
-        duty = get_duty(duty_number).to_html(classes="table table-striped, text-end", border=1, index=False)
 
-    return render_template("check_duty/check_duty.html", form=form, check_duty=duty)
+        duty = driver_service.retrieve_duty(duty_number).to_html(
+            classes="table table-striped, text-end", border=1, index=False)
+
+    return render_template("pages/check_duty.html", form=form, check_duty=duty)
 
 
 @app.route("/edit/line_number", methods=["POST", "GET"])
 def edit_line_number():
     form = EditLineNumber()
+    driver_service = get_driver_service()
     if form.validate_on_submit():
-        global line_number
+
         line_number = form.data["line_number"]
+        driver_service.update_line_number(line_number)
         return redirect(url_for("dashboard"))
 
-    return render_template("edit/edit_line_number.html", form=form)
+    return render_template("forms/edit_line_number.html", form=form)
 
 app.run(debug=True)

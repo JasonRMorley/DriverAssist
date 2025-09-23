@@ -34,5 +34,3 @@ def get_duty(duty_number):
         duties[duties["Duty No."].astype(str).str.lstrip("0") == dn]
         .sort_values("Sign ON", ascending=True)  # earlier board first
     )
-
-print(get_duty("1"))
