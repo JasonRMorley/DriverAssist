@@ -4,8 +4,7 @@ from flask_bootstrap import Bootstrap5
 from roster import *
 from datetime import date, timedelta
 from forms import *
-from dev_tools import get_driver_service
-
+from dev_tools import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'roundabout'
@@ -14,8 +13,8 @@ bootstrap = Bootstrap5(app)
 
 
 @app.route("/")
+@driver_handle()
 def dashboard():
-
     driver_service = get_driver_service()
     date_today = driver_service.date_today.strftime("%d/%m/%Y")
 
@@ -25,9 +24,21 @@ def dashboard():
 
     return render_template("/pages/dashboard.html", roster=show_roster, date=date_today, driver=driver_data)
 
-@app.route("/setup/driver")
+
+@app.route("/setup/driver", methods=["POST", "GET"])
+def setup_driver():
+    driver_service = get_driver_service()
+    form = SetupDriverForm()
+    if form.validate_on_submit():
+        name, number, line_number = form.data["driver_name"], form.data["driver_number"], form.data["line_number"]
+        driver_service.setup_new_driver(name=name, number=number, line_number=line_number)
+        return redirect(url_for("dashboard"))
+
+    return render_template("pages/setup_driver.html", form=form)
+
 
 @app.route("/check/week", methods=["POST", "GET"])
+@driver_handle()
 def check_week():
     driver_service = get_driver_service()
 
@@ -41,7 +52,9 @@ def check_week():
 
     return render_template("pages/check_week.html", form=form, check_roster=check_roster)
 
+
 @app.route("/check/duty", methods=["POST", "GET"])
+@driver_handle()
 def check_duty():
     driver_service = get_driver_service()
 
@@ -57,15 +70,16 @@ def check_duty():
 
 
 @app.route("/edit/line_number", methods=["POST", "GET"])
+@driver_handle()
 def edit_line_number():
     form = EditLineNumber()
     driver_service = get_driver_service()
     if form.validate_on_submit():
-
         line_number = form.data["line_number"]
         driver_service.update_line_number(line_number)
         return redirect(url_for("dashboard"))
 
     return render_template("forms/edit_line_number.html", form=form)
+
 
 app.run(debug=True)

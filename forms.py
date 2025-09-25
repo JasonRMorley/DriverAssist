@@ -21,8 +21,8 @@ class EditLineNumber(FlaskForm):
 
 
 class SetupDriverForm(FlaskForm):
-    driver_name = StringField("Enter name")
-    driver_number = StringField("Enter driver number")
-    line_number = StringField("Enter current line number")
+    driver_name = StringField("Enter name", validators=[DataRequired()])
+    driver_number = StringField("Enter driver number", validators=[DataRequired()])
+    line_number = StringField("Enter current line number", validators=[DataRequired()])
 
     submit = SubmitField()

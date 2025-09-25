@@ -1,0 +1,14 @@
+{% extends "utils/base.html" %}
+{% block title %} {% endblock %}
+
+{% block content %}
+{% include 'utils/header.html' %}
+<div class="container">
+    <form method="POST">
+        {{ render_form(form) }}
+    </form>
+</div>
+
+
+
+{% endblock %}

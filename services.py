@@ -8,10 +8,10 @@ class DriverService:
         self.driver_repository = driver_repository
         self.duty_repository = duty_repository
         self.date_today = date.today()
-
-        if self.driver_repository.driver_data["previous_login_date"] != self.driver_repository.driver_data[
-            "current_login_date"]:
-            self.auto_update_line_number()
+        if self.driver_repository.driver_data is not None:
+            if self.driver_repository.driver_data["previous_login_date"] != self.driver_repository.driver_data[
+                    "current_login_date"]:
+                self.auto_update_line_number()
 
     def get_driver_details_from_file(self) -> dict:
         return self.driver_repository.load_from_file()
@@ -66,3 +66,14 @@ class DriverService:
 
         print(f"line number updated to {new_line_number}")
         print(f"drivers previous login set to: {self.date_today}")
+
+    def setup_new_driver(self, name, number, line_number):
+        previous_login_date = current_login_date = self.date_today.strftime("%d/%m/%Y")
+        self.driver_repository.driver_data = {
+            "line_number": line_number,
+            "previous_login_date": previous_login_date,
+            "current_login_date": current_login_date,
+            "driver_name": name,
+            "driver_number": number
+        }
+        self.driver_repository.save_to_file()
