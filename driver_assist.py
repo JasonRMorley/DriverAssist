@@ -5,9 +5,10 @@ from roster import *
 from datetime import date, timedelta
 from forms import *
 from dev_tools import *
+import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'roundabout'
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 csrf = CSRFProtect(app)
 bootstrap = Bootstrap5(app)
 
